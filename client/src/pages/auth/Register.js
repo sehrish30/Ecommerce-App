@@ -27,7 +27,7 @@ const Register = () => {
     <form onSubmit={handleSubmit}>
       <input
         type="email"
-        placeholder="email"
+        placeholder="Your email"
         className="form-control"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
@@ -43,7 +43,6 @@ const Register = () => {
       <div className="row">
         <div className="col-md-6 offset-md-3">
           <h4>Register</h4>
-
           {registerForm()}
         </div>
         <div className="col-md-6 offset-md-3"></div>
