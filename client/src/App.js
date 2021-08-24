@@ -2,6 +2,7 @@ import { Switch, Route } from "react-router-dom";
 import { useEffect } from "react";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
+import ForgotPassword from "./pages/auth/ForgotPassword";
 import Home from "./pages/Home";
 import Header from "./components/nav/Header";
 import { ToastContainer } from "react-toastify";
@@ -43,6 +44,7 @@ function App() {
         <Route exact path="/login" component={Login} />
         <Route exact path="/register" component={Register} />
         <Route exact path="/register/complete" component={RegisterComplete} />
+        <Route exact path="/forgot/password" component={ForgotPassword} />
       </Switch>
     </>
   );

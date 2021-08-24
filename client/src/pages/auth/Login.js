@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { auth, googleAuthProvider } from "../../firebase";
 import { toast } from "react-toastify";
 import { Button } from "antd";
+import { Link } from "react-router-dom";
 
 import { MailOutlined, GoogleOutlined } from "@ant-design/icons";
 
@@ -118,6 +119,9 @@ const Login = ({ history }) => {
           >
             Login with Google
           </Button>
+          <Link to="/forgot/password" className="float-right text-danger">
+            Forgot password
+          </Link>
         </div>
         <div className="col-md-6 offset-md-3"></div>
       </div>
