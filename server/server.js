@@ -4,6 +4,7 @@ const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 require("dotenv").config();
+const { readdirSync } = require("fs");
 
 // app
 const app = express();
@@ -14,6 +15,7 @@ mongoose
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: true,
+    useUnifiedTopology: true,
   })
   .then(() => {
     console.log("DB connected");
@@ -27,12 +29,9 @@ app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-// routes
-app.get("/api", (req, res) => {
-  res.json({
-    data: "hey you hit node API",
-  });
-});
+//Routes middleware
+// read file synchronously loop through each file and require them
+readdirSync("./routes").map((r) => app.use("/api", require(`./routes/${r}`)));
 
 // port
 const port = process.env.PORT || 80000;
