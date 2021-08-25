@@ -10,6 +10,8 @@ import "react-toastify/dist/ReactToastify.css";
 import RegisterComplete from "./pages/auth/RegisterComplete";
 import History from "./pages/user/History";
 
+import UserRoute from "./components/routes/UserRoute";
+
 import { auth } from "./firebase";
 import { useDispatch } from "react-redux";
 
@@ -55,7 +57,8 @@ function App() {
         <Route exact path="/register" component={Register} />
         <Route exact path="/register/complete" component={RegisterComplete} />
         <Route exact path="/forgot/password" component={ForgotPassword} />
-        <Route exact path="/user/history" component={History} />
+        {/* protected routes */}
+        <UserRoute exact path="/user/history" component={History} />
       </Switch>
     </>
   );
