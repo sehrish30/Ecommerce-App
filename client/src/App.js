@@ -11,8 +11,10 @@ import RegisterComplete from "./pages/auth/RegisterComplete";
 import History from "./pages/user/History";
 import Wishlist from "./pages/user/Wishlist";
 import Password from "./pages/user/Password";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 import UserRoute from "./components/routes/UserRoute";
+import AdminRoute from "./components/routes/AdminRoute";
 
 import { auth } from "./firebase";
 import { useDispatch } from "react-redux";
@@ -48,11 +50,12 @@ function App() {
       }
     });
     return () => unsubscribe();
-  }, []);
+  }, [dispatch]);
   return (
     <>
       <Header />
       <ToastContainer />
+
       <Switch>
         <Route exact path="/" component={Home} />
         <Route exact path="/login" component={Login} />
@@ -63,6 +66,7 @@ function App() {
         <UserRoute exact path="/user/history" component={History} />
         <UserRoute exact path="/user/wishlist" component={Wishlist} />
         <UserRoute exact path="/user/password" component={Password} />
+        <AdminRoute exact path="/admin/dashboard" component={AdminDashboard} />
       </Switch>
     </>
   );

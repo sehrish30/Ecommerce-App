@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { auth } from "../../firebase";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import { createOrUpdateUser } from "../../functions/auth";
 
@@ -12,13 +12,13 @@ const RegisterComplete = () => {
   let history = useHistory();
   let dispatch = useDispatch();
 
-  const { user } = useSelector((state) => ({ ...state }));
+  // const { user } = useSelector((state) => ({ ...state }));
 
   useEffect(() => {
     console.log(localStorage.getItem("emailForRegisteration"));
     console.log(window.location.href);
     setEmail(localStorage.getItem("emailForRegisteration"));
-  }, []);
+  }, [history]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
