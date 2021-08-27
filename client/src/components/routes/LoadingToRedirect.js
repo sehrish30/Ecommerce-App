@@ -13,6 +13,7 @@ const LoadingToRedirect = () => {
     count === 0 && history.push("/");
     return () => clearInterval(interval);
   }, [count]);
+
   return (
     <div className="container p-5 text-center">
       <p>Redirecting you in {count} seconds</p>
