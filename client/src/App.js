@@ -12,6 +12,7 @@ import History from "./pages/user/History";
 import Wishlist from "./pages/user/Wishlist";
 import Password from "./pages/user/Password";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import CategoryCreate from "./pages/admin/category/CategoryCreate";
 
 import UserRoute from "./components/routes/UserRoute";
 import AdminRoute from "./components/routes/AdminRoute";
@@ -67,6 +68,7 @@ function App() {
         <UserRoute exact path="/user/wishlist" component={Wishlist} />
         <UserRoute exact path="/user/password" component={Password} />
         <AdminRoute exact path="/admin/dashboard" component={AdminDashboard} />
+        <AdminRoute exact path="/admin/category" component={CategoryCreate} />
       </Switch>
     </>
   );
