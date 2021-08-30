@@ -6,7 +6,7 @@ export const getCategories = async () =>
 export const getCategory = async (slug) =>
   await axios.get(`${process.env.REACT_APP_API}/category/${slug}`);
 
-export const removeCategory = async (slug, category, authtoken) =>
+export const removeCategory = async (slug, authtoken) =>
   await axios.delete(`${process.env.REACT_APP_API}/category/${slug}`, {
     headers: {
       authtoken,
