@@ -9,6 +9,7 @@ import {
   getCategories,
   removeCategory,
 } from "../../../functions/category";
+import CategoryForm from "../../../components/forms/CategoryForm";
 
 const CategoryCreate = () => {
   const [name, setName] = useState("");
@@ -60,21 +61,6 @@ const CategoryCreate = () => {
     }
   };
 
-  const showCategoryForm = () => (
-    <form onSubmit={handleSubmit}>
-      <div className="form-group">
-        <input
-          onChange={(e) => setName(e.target.value)}
-          type="text"
-          className="form-control"
-          value={name}
-          autoFocus
-          required
-        />
-        <button className="btn btn-outline-primary mt-4">Save</button>
-      </div>
-    </form>
-  );
   return (
     <div className="container-fluid">
       <div className="row">
@@ -87,7 +73,11 @@ const CategoryCreate = () => {
           ) : (
             <h4>Create category</h4>
           )}
-          {showCategoryForm()}
+          <CategoryForm
+            handleSubmit={handleSubmit}
+            setName={setName}
+            name={name}
+          />
           {categories.map((c) => (
             <div className="alert alert-secondary" key={c.id}>
               {c.name}
@@ -105,7 +95,6 @@ const CategoryCreate = () => {
               </Link>
             </div>
           ))}
-          <div>{JSON.stringify(categories)}</div>
         </div>
       </div>
     </div>

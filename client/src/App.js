@@ -21,6 +21,7 @@ import { auth } from "./firebase";
 import { useDispatch } from "react-redux";
 
 import { currentUser } from "./functions/auth";
+import CategoryUpdate from "./pages/admin/category/CategoryUpdate";
 
 function App() {
   const dispatch = useDispatch();
@@ -69,6 +70,11 @@ function App() {
         <UserRoute exact path="/user/password" component={Password} />
         <AdminRoute exact path="/admin/dashboard" component={AdminDashboard} />
         <AdminRoute exact path="/admin/category" component={CategoryCreate} />
+        <AdminRoute
+          exact
+          path="/admin/category/:slug"
+          component={CategoryUpdate}
+        />
       </Switch>
     </>
   );
