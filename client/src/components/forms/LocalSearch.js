@@ -7,6 +7,7 @@ const LocalSearch = ({ keyword, setKeyword }) => {
   };
   return (
     <input
+      autoFocus
       type="search"
       placeholder="Filter"
       value={keyword}
