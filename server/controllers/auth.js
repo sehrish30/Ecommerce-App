@@ -21,7 +21,7 @@ exports.createOrUpdateUser = async (req, res) => {
       name: name || email.split("@")[0],
       picture,
     }).save();
-    console.log("USER CREATED", newUser);
+    // console.log("USER CREATED", newUser);
     res.json(newUser);
   }
 };
