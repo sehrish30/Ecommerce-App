@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AdminNav from "../../../components/nav/AdminNav";
 import { createProduct } from "../../../functions/product";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import ProductCreateForm from "../../../components/forms/ProductCreateForm";
+
+import { getCategories, getCategorySubs } from "../../../functions/category";
 
 const initialState = {
   title: "",
@@ -11,7 +13,7 @@ const initialState = {
   price: "",
   // category: "",
   categories: [],
-  // subs: [],
+  subs: [],
   // shipping: "",
   quantity: "",
   images: [],
@@ -25,6 +27,15 @@ const ProductCreate = () => {
   // redux
   const { user } = useSelector((state) => ({ ...state }));
   const [values, setValues] = useState(initialState);
+  const [subOptions, setSubOptions] = useState([]);
+  const [showSub, setShowSub] = useState(false);
+
+  const loadCategories = () =>
+    getCategories().then((c) => setValues({ ...values, categories: c.data }));
+
+  useEffect(() => {
+    loadCategories();
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -35,7 +46,8 @@ const ProductCreate = () => {
         window.location.reload();
       })
       .catch((err) => {
-        toast.error(err.response.data.err);
+        console.log(err.response);
+        toast.error(err.response?.data?.err);
       });
   };
 
@@ -45,6 +57,16 @@ const ProductCreate = () => {
       [e.target.name]: e.target.value,
     });
     console.log(e.target.name, "=======", e.target.value);
+  };
+
+  const handleCategoryChange = (e) => {
+    e.preventDefault();
+    console.log("CLICKED CATEGORY", e.target.value);
+    setValues({ ...values, subs: [], category: e.target.value });
+    getCategorySubs(e.target.value).then((res) => {
+      setSubOptions(res?.data);
+    });
+    setShowSub(true);
   };
 
   return (
@@ -60,6 +82,10 @@ const ProductCreate = () => {
             handleSubmit={handleSubmit}
             handleChange={handleChange}
             values={values}
+            handleCategoryChange={handleCategoryChange}
+            subOptions={subOptions}
+            setValues={setValues}
+            showSub={showSub}
           />
         </div>
       </div>
