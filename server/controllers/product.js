@@ -56,3 +56,22 @@ exports.read = async (req, res) => {
     });
   }
 };
+
+exports.update = async (req, res) => {
+  try {
+    if (req.body.title) {
+      req.body.slug = slugify(req.body.title);
+    }
+    const updated = await Product.findOneAndUpdate(
+      { slug: req.params.slug },
+      req.body,
+      { new: true }
+    ).exec();
+    return res.status(200).json(updated);
+  } catch (err) {
+    console.log("PRODUCT UPDATE ERROR", err);
+    return res.status(500).json({
+      err: err.message,
+    });
+  }
+};

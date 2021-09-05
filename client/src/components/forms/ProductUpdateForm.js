@@ -32,7 +32,6 @@ const ProductUpdateForm = ({
   } = values;
   return (
     <div>
-      {JSON.stringify(values)}
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Title</label>
