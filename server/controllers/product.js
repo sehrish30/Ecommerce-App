@@ -42,3 +42,17 @@ exports.remove = async (req, res) => {
     });
   }
 };
+
+exports.read = async (req, res) => {
+  try {
+    const product = await Product.findOne({ slug: req.params.slug })
+      .populate("category")
+      .populate("subs")
+      .exec();
+    return res.json(product);
+  } catch (err) {
+    return res.status(500).json({
+      err: err.message,
+    });
+  }
+};

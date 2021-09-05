@@ -13,10 +13,10 @@ const initialState = {
   title: "",
   description: "",
   price: "",
-  // category: "",
+  category: "",
   categories: [],
   subs: [],
-  // shipping: "",
+  shipping: "",
   quantity: "",
   images: [],
   colors: ["Black", "Brown", "Silver", "White", "Blue"],
@@ -94,7 +94,7 @@ const ProductCreate = () => {
               setValues={setValues}
             />
           </div>
-          {JSON.stringify(values.images)}
+
           <ProductCreateForm
             handleSubmit={handleSubmit}
             handleChange={handleChange}
