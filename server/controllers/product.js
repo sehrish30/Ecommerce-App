@@ -75,3 +75,48 @@ exports.update = async (req, res) => {
     });
   }
 };
+
+// exports.list = async (req, res) => {
+//   try {
+//     const { sort, order, limit } = req.body;
+//     // sort = createdAt/updatedAt
+//     // order = desc/asc
+//     // limit = 3
+//     const products = await Product.find({})
+//       .populate("category")
+//       .populate("subs")
+//       .sort([[sort, order]])
+//       .limit(limit)
+//       .exec();
+//     return res.status(200).json(products);
+//   } catch (err) {
+//     console.log(err);
+//   }
+// };
+
+// WITH PAGINATION
+exports.list = async (req, res) => {
+  try {
+    const { sort, order, page } = req.body;
+    const currentPage = page || 1;
+    const perPage = 3;
+    // sort = createdAt/updatedAt
+    // order = desc/asc
+    // limit = 3
+    const products = await Product.find({})
+      .skip((currentPage - 1) * perPage)
+      .populate("category")
+      .populate("subs")
+      .sort([[sort, order]])
+      .limit(perPage)
+      .exec();
+    return res.status(200).json(products);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+exports.productsCount = async (req, res) => {
+  let total = await Product.find({}).estimatedDocumentCount().exec();
+  return res.status(200).json(total);
+};
