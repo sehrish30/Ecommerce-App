@@ -120,3 +120,48 @@ exports.productsCount = async (req, res) => {
   let total = await Product.find({}).estimatedDocumentCount().exec();
   return res.status(200).json(total);
 };
+
+exports.productStar = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.productId).exec();
+    const user = await User.findOne({ email: req.user.email }).exec();
+
+    const { star } = req.body;
+    // who is updating
+    // check if user has already rated this project
+    let = product.ratings.find(
+      (ele) => ele.postedBy.toString() === user._id.toString()
+    );
+
+    // if user haven't left rating yet push it
+    if (!existingRatingObject) {
+      let ratingAdded = await Product.findByIdAndUpdate(
+        product._id,
+        {
+          $push: {
+            ratings: { star, postedBy: user._id },
+          },
+        },
+        { new: true }
+      ).exec();
+      return res.status(201).json(ratingAdded);
+    } else {
+      // if rating object matches an object inside rating
+      const ratingUpdated = await Product.updateOne(
+        {
+          ratings: { $elemMatch: existingRatingObject },
+        },
+        {
+          // this is how we can access and update only star from rating element
+          $set: { "ratings.$.star": star },
+        },
+        { new: true }
+      ).exec();
+      return res.status(201).json(ratingUpdated);
+    }
+
+    // if user has already pushed rating update it
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+};
