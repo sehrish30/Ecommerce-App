@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, Tabs } from "antd";
 import { Link } from "react-router-dom";
 import { HeartOutlined, ShoppingCartOutlined } from "@ant-design/icons";
@@ -6,11 +6,15 @@ import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Laptop from "../images/laptop.jpg";
 import ProductListItems from "../components/cards/ProductListItems";
+import StarRatings from "react-star-ratings";
+import RatingModal from "./modal/RatingModal";
+import { showAverage } from "../functions/rating";
 
 const { TabPane } = Tabs;
 
-const SingleProduct = ({ product }) => {
-  const { title, images, description } = product;
+// this is children component of product page
+const SingleProduct = ({ product, onStarClick, star }) => {
+  const { title, images, description, _id } = product;
   return (
     <>
       <div className="col-md-7">
@@ -42,6 +46,10 @@ const SingleProduct = ({ product }) => {
         <h1 className="bg-info p-3" style={{ color: "white", borderRadius: 3 }}>
           {title}
         </h1>
+        {product && product.ratings && product.ratings.length > 0
+          ? showAverage(product)
+          : "No ratings yet"}
+
         <Card
           actions={[
             <>
@@ -53,6 +61,22 @@ const SingleProduct = ({ product }) => {
               <br />
               Add to Wishlist
             </Link>,
+            <div>
+              <RatingModal>
+                <StarRatings
+                  // changeRating={(newRating, name) =>
+                  //   console.log("newRating", newRating, "name", name)
+                  // }
+                  changeRating={onStarClick}
+                  rating={star}
+                  name={_id}
+                  numberOfStars={5}
+                  isSelectable={true}
+                  starRatedColor="gold"
+                  starHoverColor="gold"
+                />
+              </RatingModal>
+            </div>,
           ]}
         >
           <ProductListItems product={product} />

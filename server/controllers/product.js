@@ -1,5 +1,6 @@
 const Product = require("../models/product");
 const slugify = require("slugify");
+const User = require("../models/user");
 
 exports.create = async (req, res) => {
   try {
@@ -129,7 +130,7 @@ exports.productStar = async (req, res) => {
     const { star } = req.body;
     // who is updating
     // check if user has already rated this project
-    let = product.ratings.find(
+    let existingRatingObject = product.ratings.find(
       (ele) => ele.postedBy.toString() === user._id.toString()
     );
 
@@ -162,6 +163,7 @@ exports.productStar = async (req, res) => {
 
     // if user has already pushed rating update it
   } catch (err) {
+    console.log(err);
     return res.status(500).send(err);
   }
 };
