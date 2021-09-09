@@ -189,3 +189,30 @@ exports.listRelated = async (req, res) => {
     return res.status(500).send(err);
   }
 };
+
+// SEARCH FILTERS
+const handleQuery = async (req, res, query) => {
+  // fields like description and title have text=true so this is called text-based search
+  const products = await Product.find({
+    $text: { $search: query },
+  })
+    .populate("category", "_id name")
+    .populate("subs", "_id name")
+    .populate("postedBy", "_id name")
+    .exec();
+
+  return res.json(products);
+};
+
+exports.searchFilters = async (req, res) => {
+  try {
+    const { query } = req.body;
+
+    if (query) {
+      console.log("query", query);
+      await (req, res, query);
+    }
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+};
