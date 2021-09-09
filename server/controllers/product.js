@@ -167,3 +167,25 @@ exports.productStar = async (req, res) => {
     return res.status(500).send(err);
   }
 };
+
+exports.listRelated = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.productId).exec();
+    // all porducts same category of this except this
+    const related = await Product.find({
+      _id: {
+        $ne: product._id,
+      },
+      category: product.category,
+    })
+      .limit(3)
+      .populate("category")
+      .populate("subs")
+      .populate("postedBy")
+      .exec();
+
+    return res.json(related);
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+};

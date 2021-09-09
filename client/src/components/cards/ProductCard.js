@@ -3,38 +3,46 @@ import { Card } from "antd";
 import { EyeOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import laptop from "../../images/laptop.jpg";
 import { Link } from "react-router-dom";
+import { showAverage } from "../../functions/rating";
 
 const { Meta } = Card;
 const ProductCard = ({ product }) => {
   const { images, title, description, slug } = product;
   return (
-    <Card
-      hoverable
-      className="m-4"
-      cover={
-        <img
-          style={{ height: "200px", objectFit: "contain" }}
-          alt="product"
-          src={images.length > 0 ? images[0]?.url : laptop}
+    <>
+      {product && product.ratings && product.ratings.length > 0 ? (
+        showAverage(product)
+      ) : (
+        <div className="text-center pt-1 pb-3">No ratings yet</div>
+      )}
+      <Card
+        hoverable
+        className="m-4"
+        cover={
+          <img
+            style={{ height: "200px", objectFit: "contain" }}
+            alt="product"
+            src={images.length > 0 ? images[0]?.url : laptop}
+          />
+        }
+        actions={[
+          <>
+            <Link to={`/product/${slug}`}>
+              <EyeOutlined className="text-warning" />
+            </Link>
+            View product
+          </>,
+          <>
+            <ShoppingCartOutlined className="text-danger" /> Add to Cart
+          </>,
+        ]}
+      >
+        <Meta
+          title={title}
+          description={`${description && description.substring(0, 40)}...`}
         />
-      }
-      actions={[
-        <>
-          <Link to={`/product/${slug}`}>
-            <EyeOutlined className="text-warning" />
-          </Link>
-          View product
-        </>,
-        <>
-          <ShoppingCartOutlined className="text-danger" /> Add to Cart
-        </>,
-      ]}
-    >
-      <Meta
-        title={title}
-        description={`${description && description.substring(0, 40)}...`}
-      />
-    </Card>
+      </Card>
+    </>
   );
 };
 

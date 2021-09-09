@@ -28,6 +28,7 @@ import ProductCreate from "./pages/admin/product/ProductCreate";
 import AllProducts from "./pages/admin/product/AllProducts";
 import ProductUpdate from "./pages/admin/product/ProductUpdate";
 import Product from "./pages/Product";
+import CategoryHome from "./pages/category/CategoryHome";
 
 function App() {
   const dispatch = useDispatch();
@@ -70,6 +71,7 @@ function App() {
         <Route exact path="/register" component={Register} />
         <Route exact path="/register/complete" component={RegisterComplete} />
         <Route exact path="/forgot/password" component={ForgotPassword} />
+        <Route exact path="/category/:slug" component={CategoryHome} />
         {/* protected routes */}
         <UserRoute exact path="/user/history" component={History} />
         <UserRoute exact path="/user/wishlist" component={Wishlist} />
