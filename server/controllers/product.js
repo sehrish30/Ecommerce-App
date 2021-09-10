@@ -237,9 +237,52 @@ const handleCategory = async (req, res, category) => {
   }
 };
 
+const handleStars = (req, res, stars) => {
+  try {
+    // generate a project based on the product document
+    // $$ROOT gives you access to entire project document
+    // if not $$ROOT shortcut then
+    // { title : "$title" , description: "$description"}
+    // but this is not practical
+    Product.aggregate([
+      {
+        $project: {
+          document: "$$ROOT",
+          // title : "$title",
+          floorAverage: {
+            $floor: {
+              $avg: "$ratings.star",
+            },
+          },
+        },
+      },
+      // match the project and send the json document if its average ratings
+      // matche with the rating chosen by user
+      { $match: { floorAverage: stars } },
+    ])
+      .limit(12)
+      .exec((err, aggregates) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json(err);
+        }
+        Product.find({ _id: aggregates })
+          .populate("category", "_id name")
+          .populate("subs", "_id name")
+          .populate("postedBy", "_id name")
+          .exec((err, products) => {
+            if (err) return res.status(500).json(err);
+            return res.json(products);
+          });
+      });
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+};
+
 exports.searchFilters = async (req, res) => {
   try {
-    const { query, price, category } = req.body;
+    const { query, price, category, stars } = req.body;
 
     if (query) {
       console.log("query----->", query);
@@ -252,6 +295,11 @@ exports.searchFilters = async (req, res) => {
     }
     if (category) {
       await handleCategory(req, res, category);
+    }
+
+    if (stars) {
+      console.log("STARS---->", stars);
+      await handleStars(req, res, stars);
     }
   } catch (err) {
     console.log(err);

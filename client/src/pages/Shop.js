@@ -8,7 +8,12 @@ import Productcard from "../components/cards/ProductCard";
 import ProductCard from "../components/cards/ProductCard";
 import { Menu, Slider, Checkbox } from "antd";
 import { getCategories } from "../functions/category";
-import { DollarOutlined, DownSquareOutlined } from "@ant-design/icons";
+import {
+  DollarOutlined,
+  DownSquareOutlined,
+  StarOutlined,
+} from "@ant-design/icons";
+import Star from "../components/forms/Star";
 
 const { SubMenu, ItemGroup } = Menu;
 
@@ -19,6 +24,7 @@ const Shop = () => {
   const [price, setPrice] = useState([0, 0]);
   const [categories, setCategories] = useState([]);
   const [categoryIds, setCategoryIds] = useState([]);
+  const [star, setStar] = useState(null);
   const dispatch = useDispatch();
 
   let { search } = useSelector((state) => ({ ...state }));
@@ -57,14 +63,18 @@ const Shop = () => {
   const handleSlider = (value) => {
     setCategoryIds([]);
     // make search state empty in redux state
+
+    setTimeout(() => {
+      setOk(!ok);
+    }, 300);
+
+    // reset values
     dispatch({
       type: "SEARCH_QUERY",
       payload: { text: "" },
     });
+    setStar(null);
     setPrice(value);
-    setTimeout(() => {
-      setOk(!ok);
-    }, 300);
   };
 
   useEffect(() => {
@@ -75,12 +85,14 @@ const Shop = () => {
   // load products based on category
 
   const handleCategorySelection = (e) => {
-    // dispatch search text clear
+    // reset values
     dispatch({
       type: "SEARCH_QUERY",
       payload: { text: "" },
     });
+    setStar(null);
     setPrice([0, 0]);
+
     // remove any price values
     // setCategoryIds((prev) => [...prev, e.target.value]);
     let inTheState = [...categoryIds];
@@ -112,13 +124,39 @@ const Shop = () => {
       </div>
     ));
 
+  // show star products by star rating
+  const handleStarClick = (num) => {
+    console.log(num);
+
+    // reset prev values
+    dispatch({
+      type: "SEARCH_QUERY",
+      payload: { text: "" },
+    });
+    setPrice([0, 0]);
+    setCategoryIds([]);
+    setStar(num);
+
+    fetchProducts({ stars: num });
+  };
+
+  const showStars = () => (
+    <div className="pr-4 pl-4 pb-2 ">
+      <Star starClick={handleStarClick} numberOfStars={5} />
+      <Star starClick={handleStarClick} numberOfStars={4} />
+      <Star starClick={handleStarClick} numberOfStars={3} />
+      <Star starClick={handleStarClick} numberOfStars={2} />
+      <Star starClick={handleStarClick} numberOfStars={1} />
+    </div>
+  );
+
   return (
     <div className="container-fluid">
       <div className="row">
         <div className="col-md-3 pt-3">
           <h4 className="text-center">Search/Filter</h4>
           <hr />
-          <Menu mode="inline" defaultOpenKeys={["1", "2"]}>
+          <Menu mode="inline" defaultOpenKeys={["1", "2", "3"]}>
             <SubMenu
               key="1"
               title={
@@ -149,6 +187,17 @@ const Shop = () => {
               }
             >
               <div style={{ marginTop: 10 }}>{showCategories()}</div>
+            </SubMenu>
+            <SubMenu
+              key="3"
+              title={
+                <span className="h6">
+                  <StarOutlined />
+                  <span style={{ verticalAlign: "middle" }}>Rating</span>
+                </span>
+              }
+            >
+              <div style={{ marginTop: 10 }}>{showStars()}</div>
             </SubMenu>
           </Menu>
         </div>
