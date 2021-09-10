@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Menu } from "antd";
+import { Menu, Badge } from "antd";
 import {
   HomeOutlined,
   SettingOutlined,
@@ -7,6 +7,7 @@ import {
   UserAddOutlined,
   LogoutOutlined,
   ShoppingOutlined,
+  ShoppingCartOutlined,
 } from "@ant-design/icons";
 import firebase from "firebase/app";
 
@@ -24,7 +25,7 @@ const Header = () => {
   let dispatch = useDispatch();
   let history = useHistory();
 
-  let { user } = useSelector((state) => ({ ...state }));
+  let { user, cart } = useSelector((state) => ({ ...state }));
 
   const handleClick = (e) => {
     setCurrent(e.key);
@@ -41,11 +42,22 @@ const Header = () => {
   return (
     <Menu onClick={handleClick} selectedKeys={[current]} mode="horizontal">
       <Item key="home" icon={<HomeOutlined />}>
-        <Link to="/">Home</Link>
+        <Link style={{ verticalAlign: "middle" }} to="/">
+          Home
+        </Link>
       </Item>
 
       <Item key="shop" icon={<ShoppingOutlined />}>
-        <Link to="/shop">Shop</Link>
+        <Link style={{ verticalAlign: "middle" }} to="/shop">
+          Shop
+        </Link>
+      </Item>
+      <Item key="cart" icon={<ShoppingCartOutlined />}>
+        <Link style={{ verticalAlign: "middle" }} to="/cart">
+          <Badge count={cart.length} offset={[9, 0]}>
+            Cart
+          </Badge>
+        </Link>
       </Item>
 
       {user && (
@@ -57,12 +69,16 @@ const Header = () => {
         >
           {user && user.role === "subscriber" && (
             <Item>
-              <Link to="/user/history">Dashboard</Link>
+              <Link style={{ verticalAlign: "middle" }} to="/user/history">
+                Dashboard
+              </Link>
             </Item>
           )}
           {user && user.role === "admin" && (
             <Item>
-              <Link to="/admin/dashboard">Dashboard</Link>
+              <Link style={{ verticalAlign: "middle" }} to="/admin/dashboard">
+                Dashboard
+              </Link>
             </Item>
           )}
           <Item icon={<LogoutOutlined />} onClick={logout}>

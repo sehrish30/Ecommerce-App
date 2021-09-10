@@ -31,6 +31,7 @@ import Product from "./pages/Product";
 import CategoryHome from "./pages/category/CategoryHome";
 import SubHome from "./pages/sub/SubHome";
 import Shop from "./pages/Shop";
+import Cart from "./pages/Cart";
 
 function App() {
   const dispatch = useDispatch();
@@ -76,6 +77,7 @@ function App() {
         <Route exact path="/category/:slug" component={CategoryHome} />
         <Route exact path="/sub/:slug" component={SubHome} />
         <Route path="/shop" component={Shop} />
+        <Route exact path="/cart" component={Cart} />
         {/* protected routes */}
         <UserRoute exact path="/user/history" component={History} />
         <UserRoute exact path="/user/wishlist" component={Wishlist} />

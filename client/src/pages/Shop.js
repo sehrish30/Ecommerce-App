@@ -19,7 +19,7 @@ import {
 import Star from "../components/forms/Star";
 import { getSubs } from "../functions/sub";
 
-const { SubMenu, ItemGroup } = Menu;
+const { SubMenu } = Menu;
 
 const Shop = () => {
   const [products, setProducts] = useState([]);
