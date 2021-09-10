@@ -6,12 +6,15 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import Productcard from "../components/cards/ProductCard";
 import ProductCard from "../components/cards/ProductCard";
-import { Menu, Slider, Checkbox } from "antd";
+import { Menu, Slider, Checkbox, Radio } from "antd";
 import { getCategories } from "../functions/category";
 import {
   DollarOutlined,
   DownSquareOutlined,
   StarOutlined,
+  AppstoreOutlined,
+  BgColorsOutlined,
+  CarOutlined,
 } from "@ant-design/icons";
 import Star from "../components/forms/Star";
 import { getSubs } from "../functions/sub";
@@ -21,7 +24,25 @@ const { SubMenu, ItemGroup } = Menu;
 const Shop = () => {
   const [products, setProducts] = useState([]);
   const [subs, setSubs] = useState([]);
+  const [colors, setColors] = useState([
+    "Black",
+    "Brown",
+    "Silver",
+    "White",
+    "Blue",
+  ]);
+  const [brands, setBrands] = useState([
+    "Apple",
+    "Samsung",
+    "Microsoft",
+    "Lenova",
+    "ASUS",
+    "HP",
+  ]);
+  const [shipping, setShipping] = useState("");
+  const [selectedColor, setSelectedColor] = useState(null);
   const [selectedSub, setSelectedSub] = useState([]);
+  const [selectedBrand, setSelectedBrand] = useState(null);
   const [ok, setOk] = useState(false);
   const [loading, setLoading] = useState(true);
   const [price, setPrice] = useState([0, 0]);
@@ -82,6 +103,9 @@ const Shop = () => {
     setStar(null);
     setPrice(value);
     setSelectedSub(null);
+    setSelectedBrand(null);
+    setSelectedColor(null);
+    setShipping(null);
   };
 
   useEffect(() => {
@@ -100,6 +124,9 @@ const Shop = () => {
     setStar(null);
     setPrice([0, 0]);
     setSelectedSub(null);
+    setSelectedBrand(null);
+    setSelectedColor(null);
+    setShipping(null);
 
     // remove any price values
     // setCategoryIds((prev) => [...prev, e.target.value]);
@@ -145,6 +172,9 @@ const Shop = () => {
     setCategoryIds([]);
     setStar(num);
     setSelectedSub(null);
+    setSelectedBrand(null);
+    setSelectedColor(null);
+    setShipping(null);
 
     fetchProducts({ stars: num });
   };
@@ -171,6 +201,9 @@ const Shop = () => {
     setPrice([0, 0]);
     setCategoryIds([]);
     setStar(null);
+    setSelectedBrand(null);
+    setSelectedColor(null);
+    setShipping(null);
 
     fetchProducts({ sub });
   };
@@ -189,13 +222,113 @@ const Shop = () => {
       </div>
     ));
 
+  const handleBrand = (e) => {
+    setSelectedBrand(e.target.value);
+
+    // reset prev values
+    dispatch({
+      type: "SEARCH_QUERY",
+      payload: { text: "" },
+    });
+    setPrice([0, 0]);
+    setCategoryIds([]);
+    setStar(null);
+    setSelectedColor(null);
+    setShipping(null);
+
+    fetchProducts({ brand: e.target.value });
+  };
+
+  const showBrands = () =>
+    brands.map((b) => (
+      <Radio
+        name={b}
+        className="pb-1 px-1"
+        onChange={handleBrand}
+        checked={b === selectedBrand ? true : false}
+        value={b}
+      >
+        {b}
+      </Radio>
+    ));
+
+  const handleColor = (e) => {
+    setSelectedColor(e.target.value);
+
+    // reset prev values
+    dispatch({
+      type: "SEARCH_QUERY",
+      payload: { text: "" },
+    });
+    setPrice([0, 0]);
+    setCategoryIds([]);
+    setStar(null);
+    setSelectedBrand(null);
+    setShipping(null);
+
+    fetchProducts({ color: e.target.value });
+  };
+
+  const showColors = () =>
+    colors.map((c) => (
+      <Radio
+        name={c}
+        className="pb-1 px-1"
+        onChange={handleColor}
+        checked={c === selectedColor ? true : false}
+        value={c}
+      >
+        {c}
+      </Radio>
+    ));
+
+  const handleShippingChange = (e) => {
+    // reset prev values
+    dispatch({
+      type: "SEARCH_QUERY",
+      payload: { text: "" },
+    });
+    setPrice([0, 0]);
+    setCategoryIds([]);
+    setStar(null);
+    setSelectedBrand(null);
+
+    setShipping(e.target.value);
+
+    fetchProducts({ shipping: e.target.value });
+  };
+
+  const showShipping = () => (
+    <>
+      <Checkbox
+        className="pb-2 pl-4 pr-4"
+        onChange={handleShippingChange}
+        value="Yes"
+        checked={shipping === "Yes"}
+      >
+        Yes
+      </Checkbox>
+      <Checkbox
+        className="pb-2 pl-4 pr-4"
+        onChange={handleShippingChange}
+        value="No"
+        checked={shipping === "No"}
+      >
+        No
+      </Checkbox>
+    </>
+  );
+
   return (
     <div className="container-fluid">
       <div className="row">
         <div className="col-md-3 pt-3">
           <h4 className="text-center">Search/Filter</h4>
           <hr />
-          <Menu mode="inline" defaultOpenKeys={["1", "2", "3", "4"]}>
+          <Menu
+            mode="inline"
+            defaultOpenKeys={["1", "2", "3", "4", "5", "6", "7"]}
+          >
             <SubMenu
               key="1"
               title={
@@ -251,6 +384,46 @@ const Shop = () => {
             >
               <div className="px-4" style={{ marginTop: 10 }}>
                 {showSubs()}
+              </div>
+            </SubMenu>
+            <SubMenu
+              key="5"
+              title={
+                <span className="h6">
+                  <AppstoreOutlined />
+                  <span style={{ verticalAlign: "middle" }}>Brands</span>
+                </span>
+              }
+            >
+              <div className="px-4" style={{ marginTop: 10 }}>
+                {showBrands()}
+              </div>
+            </SubMenu>
+
+            <SubMenu
+              key="6"
+              title={
+                <span className="h6">
+                  <BgColorsOutlined />
+                  <span style={{ verticalAlign: "middle" }}>Colors</span>
+                </span>
+              }
+            >
+              <div className="px-4" style={{ marginTop: 10 }}>
+                {showColors()}
+              </div>
+            </SubMenu>
+            <SubMenu
+              key="7"
+              title={
+                <span className="h6">
+                  <CarOutlined />
+                  <span style={{ verticalAlign: "middle" }}>Shipping</span>
+                </span>
+              }
+            >
+              <div className="px-4" style={{ marginTop: 10 }}>
+                {showShipping()}
               </div>
             </SubMenu>
           </Menu>

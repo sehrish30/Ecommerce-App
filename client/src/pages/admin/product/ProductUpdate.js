@@ -22,7 +22,7 @@ const ProductUpdate = ({ match, history }) => {
     quantity: "",
     images: [],
     colors: ["Black", "Brown", "Silver", "White", "Blue"],
-    brands: ["Apple", "Samsung", "Microsoft", "Lenova", "ASUS"],
+    brands: ["Apple", "Samsung", "Microsoft", "Lenova", "ASUS", "HP"],
     color: "",
     brand: "",
   };
