@@ -14,11 +14,14 @@ import {
   StarOutlined,
 } from "@ant-design/icons";
 import Star from "../components/forms/Star";
+import { getSubs } from "../functions/sub";
 
 const { SubMenu, ItemGroup } = Menu;
 
 const Shop = () => {
   const [products, setProducts] = useState([]);
+  const [subs, setSubs] = useState([]);
+  const [selectedSub, setSelectedSub] = useState([]);
   const [ok, setOk] = useState(false);
   const [loading, setLoading] = useState(true);
   const [price, setPrice] = useState([0, 0]);
@@ -57,6 +60,9 @@ const Shop = () => {
     loadAllProducts();
     // fetch Catgeories
     getCategories().then((res) => setCategories(res.data));
+
+    // fetch sub categories
+    getSubs().then((res) => setSubs(res.data));
   }, []);
 
   // load Products based on price
@@ -75,6 +81,7 @@ const Shop = () => {
     });
     setStar(null);
     setPrice(value);
+    setSelectedSub(null);
   };
 
   useEffect(() => {
@@ -92,6 +99,7 @@ const Shop = () => {
     });
     setStar(null);
     setPrice([0, 0]);
+    setSelectedSub(null);
 
     // remove any price values
     // setCategoryIds((prev) => [...prev, e.target.value]);
@@ -136,6 +144,7 @@ const Shop = () => {
     setPrice([0, 0]);
     setCategoryIds([]);
     setStar(num);
+    setSelectedSub(null);
 
     fetchProducts({ stars: num });
   };
@@ -150,13 +159,43 @@ const Shop = () => {
     </div>
   );
 
+  const handleSub = (sub) => {
+    console.log("SUB", sub);
+    setSelectedSub(sub);
+
+    // reset prev values
+    dispatch({
+      type: "SEARCH_QUERY",
+      payload: { text: "" },
+    });
+    setPrice([0, 0]);
+    setCategoryIds([]);
+    setStar(null);
+
+    fetchProducts({ sub });
+  };
+
+  const showSubs = () =>
+    subs.map((s) => (
+      <div
+        key={s._id}
+        onClick={() => handleSub(s._id)}
+        className={`p-1 m-1 badge ${
+          selectedSub === s._id ? `badge-info` : `badge-secondary `
+        }`}
+        style={{ cursor: "pointer" }}
+      >
+        {s.name}
+      </div>
+    ));
+
   return (
     <div className="container-fluid">
       <div className="row">
         <div className="col-md-3 pt-3">
           <h4 className="text-center">Search/Filter</h4>
           <hr />
-          <Menu mode="inline" defaultOpenKeys={["1", "2", "3"]}>
+          <Menu mode="inline" defaultOpenKeys={["1", "2", "3", "4"]}>
             <SubMenu
               key="1"
               title={
@@ -198,6 +237,21 @@ const Shop = () => {
               }
             >
               <div style={{ marginTop: 10 }}>{showStars()}</div>
+            </SubMenu>
+            <SubMenu
+              key="4"
+              title={
+                <span className="h6">
+                  <DownSquareOutlined />
+                  <span style={{ verticalAlign: "middle" }}>
+                    Sub categories
+                  </span>
+                </span>
+              }
+            >
+              <div className="px-4" style={{ marginTop: 10 }}>
+                {showSubs()}
+              </div>
             </SubMenu>
           </Menu>
         </div>

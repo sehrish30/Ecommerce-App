@@ -280,9 +280,22 @@ const handleStars = (req, res, stars) => {
   }
 };
 
+const handleSub = async (req, res, sub) => {
+  try {
+    const products = await Product.find({ subs: sub })
+      .populate("category", "_id name")
+      .populate("subs", "_id name")
+      .populate("postedBy", "_id name")
+      .exec();
+    return res.json(products);
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+};
+
 exports.searchFilters = async (req, res) => {
   try {
-    const { query, price, category, stars } = req.body;
+    const { query, price, category, stars, sub } = req.body;
 
     if (query) {
       console.log("query----->", query);
@@ -300,6 +313,10 @@ exports.searchFilters = async (req, res) => {
     if (stars) {
       console.log("STARS---->", stars);
       await handleStars(req, res, stars);
+    }
+
+    if (sub) {
+      await handleSub(req, res, sub);
     }
   } catch (err) {
     console.log(err);
