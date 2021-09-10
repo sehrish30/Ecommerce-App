@@ -186,7 +186,7 @@ exports.listRelated = async (req, res) => {
 
     return res.json(related);
   } catch (err) {
-    return res.status(500).send(err);
+    return res.status(500).json(err);
   }
 };
 
@@ -200,17 +200,40 @@ const handleQuery = async (req, res, query) => {
     .populate("subs", "_id name")
     .populate("postedBy", "_id name")
     .exec();
-
   return res.json(products);
+};
+
+const handlePrice = async (req, res, price) => {
+  try {
+    let products = await Product.find({
+      price: {
+        $gte: price[0],
+        $lte: price[1],
+      },
+    })
+      .populate("category", "_id name")
+      .populate("subs", "_id name")
+      .populate("postedBy", "_id name")
+      .exec();
+
+    return res.json(products);
+  } catch (err) {
+    return res.status(500).json(err);
+  }
 };
 
 exports.searchFilters = async (req, res) => {
   try {
-    const { query } = req.body;
+    const { query, price } = req.body;
 
     if (query) {
-      console.log("query", query);
-      await (req, res, query);
+      console.log("query----->", query);
+      await handleQuery(req, res, query);
+    }
+    // price = [20, 200]
+    if (price.length > 0) {
+      console.log("PRICE----->", price);
+      await handlePrice(req, res, price);
     }
   } catch (err) {
     return res.status(500).send(err);

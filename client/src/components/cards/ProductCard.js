@@ -7,7 +7,7 @@ import { showAverage } from "../../functions/rating";
 
 const { Meta } = Card;
 const ProductCard = ({ product }) => {
-  const { images, title, description, slug } = product;
+  const { images, title, description, slug, price } = product;
   return (
     <>
       {product && product.ratings && product.ratings.length > 0 ? (
@@ -27,10 +27,9 @@ const ProductCard = ({ product }) => {
         }
         actions={[
           <>
-            <Link to={`/product/${slug}`}>
-              <EyeOutlined className="text-warning" />
-            </Link>
-            View product
+            <EyeOutlined className="text-warning" />
+
+            <Link to={`/product/${slug}`}>View product</Link>
           </>,
           <>
             <ShoppingCartOutlined className="text-danger" /> Add to Cart
@@ -41,6 +40,7 @@ const ProductCard = ({ product }) => {
           title={title}
           description={`${description && description.substring(0, 40)}...`}
         />
+        <h6 className="text-warning pt-2">BD {price}</h6>
       </Card>
     </>
   );

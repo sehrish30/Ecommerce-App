@@ -75,7 +75,7 @@ function App() {
         <Route exact path="/forgot/password" component={ForgotPassword} />
         <Route exact path="/category/:slug" component={CategoryHome} />
         <Route exact path="/sub/:slug" component={SubHome} />
-        <Route exact path="/shop" component={Shop} />
+        <Route path="/shop" component={Shop} />
         {/* protected routes */}
         <UserRoute exact path="/user/history" component={History} />
         <UserRoute exact path="/user/wishlist" component={Wishlist} />

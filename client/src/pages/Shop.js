@@ -1,13 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { getProductsByCount } from "../functions/product";
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  fetchProductsByFilter,
+  getProductsByCount,
+} from "../functions/product";
 import { useSelector, useDispatch } from "react-redux";
 import Productcard from "../components/cards/ProductCard";
 import ProductCard from "../components/cards/ProductCard";
+import { Menu, Slider } from "antd";
+
+import { DollarOutlined } from "@ant-design/icons";
+
+const { SubMenu, ItemGroup } = Menu;
 
 const Shop = () => {
   const [products, setProducts] = useState([]);
+  const [ok, setOk] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [price, setPrice] = useState([0, 0]);
+  const dispatch = useDispatch();
 
+  let { search } = useSelector((state) => ({ ...state }));
+  const { text } = search;
+
+  // load default products on page load
   const loadAllProducts = () => {
     getProductsByCount(12).then((p) => {
       setProducts(p.data);
@@ -15,14 +30,73 @@ const Shop = () => {
     });
   };
 
+  const fetchProducts = (arg) => {
+    fetchProductsByFilter(arg).then((res) => {
+      console.log(res.data, "DATA");
+      setProducts(res.data);
+    });
+  };
+
+  // load products on user search input
+  useEffect(() => {
+    const delayed = setTimeout(() => {
+      fetchProducts({ query: text });
+    }, 300);
+    return () => clearTimeout(delayed);
+  }, [text]);
+
   useEffect(() => {
     loadAllProducts();
   }, []);
+
+  // load Products based on price
+  const handleSlider = (value) => {
+    // make search state empty in redux state
+    dispatch({
+      type: "SEARCH_QUERY",
+      payload: { text: "" },
+    });
+    setPrice(value);
+    setTimeout(() => {
+      setOk(!ok);
+    }, 300);
+  };
+
+  useEffect(() => {
+    fetchProducts({ price });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ok]);
+
   return (
     <div className="container-fluid">
       <div className="row">
-        <div className="col-md-3">searc.filter menu</div>
-        <div className="col-md-9">
+        <div className="col-md-3 pt-3">
+          <h4 className="text-center">Search/Filter</h4>
+          <hr />
+          <Menu mode="inline" defaultOpenKeys={["1"]}>
+            <SubMenu
+              key="1"
+              title={
+                <span className="h6">
+                  <DollarOutlined />
+                  <span style={{ verticalAlign: "middle" }}>Price</span>
+                </span>
+              }
+            >
+              <div>
+                <Slider
+                  className="ml-4 mr-4"
+                  tipFormatter={(v) => `BD ${v}`}
+                  range
+                  value={price}
+                  onChange={handleSlider}
+                  max="5000"
+                />
+              </div>
+            </SubMenu>
+          </Menu>
+        </div>
+        <div className="col-md-9 pt-3">
           {loading ? (
             <h4 className="text-danger">Loading...</h4>
           ) : (
