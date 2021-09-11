@@ -42,9 +42,9 @@ const Cart = () => {
         <div className="col-md-8">
           <h4>Cart / {cart.length} products</h4>
           {!cart.length ? (
-            <p>
+            <p className="text-center h6 pt-4">
               No products in cart
-              <Link to="/shop">Continue Shopping</Link>
+              <Link to="/shop"> Continue Shopping </Link>
             </p>
           ) : (
             showCartItems()

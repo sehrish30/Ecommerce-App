@@ -43,6 +43,12 @@ const SingleProduct = ({ product, onStarClick, star }) => {
         payload: unique,
       });
 
+      // show cart items in side drawer
+      dispatch({
+        type: "SET_VISIBLE",
+        payload: true,
+      });
+
       // show tooltip
       setTooltip("Added to cart");
     }
