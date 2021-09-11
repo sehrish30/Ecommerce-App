@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { getUserCart, emptyUserCart } from "../functions/user";
+import { getUserCart, emptyUserCart, saveUserAddress } from "../functions/user";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const Checkout = () => {
   const { user } = useSelector((state) => ({ ...state }));
 
   const [products, setProducts] = useState([]);
   const [total, setTotal] = useState(0);
-
+  const [address, setAddress] = useState("");
+  const [addressSaved, setAddressSaved] = useState(false);
   const dispatch = useDispatch();
 
   const emptyCart = () => {
@@ -28,7 +31,14 @@ const Checkout = () => {
       toast.success("Cart is empty. Continue shopping");
     });
   };
-  const saveAddressToDb = () => {};
+  const saveAddressToDb = () => {
+    saveUserAddress(user.token, address).then((res) => {
+      if (res.data.ok) {
+        setAddressSaved(true);
+        toast.success("Address saved");
+      }
+    });
+  };
 
   useEffect(() => {
     getUserCart(user.token).then((res) => {
@@ -36,11 +46,18 @@ const Checkout = () => {
       setTotal(res.data.cartTotal);
     });
   }, []);
+
+  const handleAddress = (e) => {
+    // let add = e.target.value.replace("<p><br></p>", "");
+    // setAddress(add);
+    // console.log(add)
+  };
+
   return (
     <div className="row">
       <div className="col-md-6">
-        <h4>Enter delivery address</h4>
-        textarea
+        <h4>Delivery address</h4>
+        <ReactQuill theme="snow" value={address} onChange={setAddress} />)
         <button className="btn btn-primary mt-2" onClick={saveAddressToDb}>
           Save
         </button>
@@ -75,7 +92,10 @@ const Checkout = () => {
 
         <div className="row">
           <div className="col-md-6">
-            <button disabled={!products.length} className="btn btn-primary">
+            <button
+              disabled={!addressSaved || !products.length}
+              className="btn btn-primary"
+            >
               Place Order
             </button>
           </div>
