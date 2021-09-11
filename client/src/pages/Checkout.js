@@ -54,13 +54,15 @@ const Checkout = () => {
   };
 
   return (
-    <div className="row">
+    <div className="row px-4 pt-4">
       <div className="col-md-6">
         <h4>Delivery address</h4>
-        <ReactQuill theme="snow" value={address} onChange={setAddress} />)
-        <button className="btn btn-primary mt-2" onClick={saveAddressToDb}>
-          Save
-        </button>
+        <ReactQuill theme="snow" value={address} onChange={setAddress} />
+        <div className="text-right">
+          <button className="btn btn-primary mt-2 " onClick={saveAddressToDb}>
+            Save
+          </button>
+        </div>
         <hr />
         <h4>Got Coupon?</h4>
         Coupon input and apply btn
