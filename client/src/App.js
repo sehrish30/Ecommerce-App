@@ -33,6 +33,7 @@ import SubHome from "./pages/sub/SubHome";
 import Shop from "./pages/Shop";
 import Cart from "./pages/Cart";
 import SideDrawer from "./components/drawer/SideDrawer";
+import Checkout from "./pages/Checkout";
 
 function App() {
   const dispatch = useDispatch();
@@ -97,6 +98,7 @@ function App() {
           component={ProductUpdate}
         />
         <Route exact path="/product/:slug" component={Product} />
+        <UserRoute exact path="/checkout" component={Checkout} />
       </Switch>
     </>
   );
