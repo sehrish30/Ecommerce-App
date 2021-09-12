@@ -1,16 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { getUserCart, emptyUserCart, saveUserAddress } from "../functions/user";
+import {
+  getUserCart,
+  emptyUserCart,
+  saveUserAddress,
+  applyCoupon,
+} from "../functions/user";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
-const Checkout = () => {
+const Checkout = ({ history }) => {
   const { user } = useSelector((state) => ({ ...state }));
 
   const [products, setProducts] = useState([]);
+  const [totalAfterDiscount, setTotalAfterDiscount] = useState(0);
+  const [discountError, setDiscountError] = useState("");
   const [total, setTotal] = useState(0);
   const [address, setAddress] = useState("");
+  const [coupon, setCoupon] = useState("");
   const [addressSaved, setAddressSaved] = useState(false);
   const dispatch = useDispatch();
 
@@ -28,6 +36,8 @@ const Checkout = () => {
     emptyUserCart(user.token).then((res) => {
       setProducts([]);
       setTotal(0);
+      setTotalAfterDiscount("");
+      setCoupon("");
       toast.success("Cart is empty. Continue shopping");
     });
   };
@@ -53,19 +63,85 @@ const Checkout = () => {
     // console.log(add)
   };
 
+  const showAddress = () => (
+    <>
+      <ReactQuill theme="snow" value={address} onChange={setAddress} />
+      <div className="text-right">
+        <button className="btn btn-primary mt-2 " onClick={saveAddressToDb}>
+          Save
+        </button>
+      </div>
+    </>
+  );
+
+  const showProductSummary = () =>
+    products.map((p, i) => (
+      <div key={i}>
+        <p>
+          {p.product.title} ({p.color}) * {p.count} = BD{" "}
+          {p.product.price * p.count}
+        </p>
+      </div>
+    ));
+
+  const applyDiscountCoupon = () => {
+    console.log("sEnd coupon", coupon);
+    applyCoupon(user.token, coupon)
+      .then((res) => {
+        console.log("COUPOM", res.data);
+        if (res.data) {
+          setTotalAfterDiscount(res.data);
+
+          // push the total after discount to redux
+          dispatch({
+            type: "COUPON_APPLIED",
+            payload: true,
+          });
+        }
+        if (res.status >= 400 && res.status < 500) {
+          setDiscountError(res.data.err);
+          // update redux state
+        }
+      })
+      .catch((err) => {
+        dispatch({
+          type: "COUPON_APPLIED",
+          payload: false,
+        });
+        setDiscountError("Code invalid");
+      });
+  };
+
+  const showApplyCoupon = () => (
+    <>
+      <input
+        value={coupon}
+        onChange={(e) => {
+          setDiscountError("");
+          setCoupon(e.target.value);
+        }}
+        type="text"
+        className="form-control"
+      />
+      <button onClick={applyDiscountCoupon} className="btn btn-primary mt-2">
+        Apply
+      </button>
+    </>
+  );
+
   return (
     <div className="row px-4 pt-4">
       <div className="col-md-6">
         <h4>Delivery address</h4>
-        <ReactQuill theme="snow" value={address} onChange={setAddress} />
-        <div className="text-right">
-          <button className="btn btn-primary mt-2 " onClick={saveAddressToDb}>
-            Save
-          </button>
-        </div>
+        {showAddress()}
         <hr />
         <h4>Got Coupon?</h4>
-        Coupon input and apply btn
+        {showApplyCoupon()}
+        {discountError && (
+          <p className="bg-danger p-2 mt-2" style={{ color: "white" }}>
+            {discountError}
+          </p>
+        )}
       </div>
       <div className="col-md-6">
         <h4>Order Summary</h4>
@@ -73,14 +149,7 @@ const Checkout = () => {
         <hr />
         <p>Products {products.length}</p>
         <hr />
-        {products.map((p, i) => (
-          <div key={i}>
-            <p>
-              {p.product.title} ({p.color}) * {p.count} = BD{" "}
-              {p.product.price * p.count}
-            </p>
-          </div>
-        ))}
+        {showProductSummary()}
         <hr />
         <p
           style={{
@@ -90,11 +159,17 @@ const Checkout = () => {
           }}
         >
           Total: BD {total}
+          {totalAfterDiscount && (
+            <p className="bg-success p-2 mt-2" style={{ color: "white" }}>
+              Discount price: BD {totalAfterDiscount}
+            </p>
+          )}
         </p>
 
         <div className="row">
           <div className="col-md-6">
             <button
+              onClick={() => history.push("payment")}
               disabled={!addressSaved || !products.length}
               className="btn btn-primary"
             >

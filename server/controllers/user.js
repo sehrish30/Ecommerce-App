@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const Product = require("../models/product");
 const Cart = require("../models/cart");
+const Coupon = require("../models/coupon");
 
 exports.userCart = async (req, res) => {
   try {
@@ -93,6 +94,55 @@ exports.saveAddress = async (req, res) => {
       }
     ).exec();
     return res.status(200).json({ ok: true });
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+};
+
+exports.applyCouponToUserCart = async (req, res) => {
+  try {
+    const { coupon } = req.body;
+
+    // validate coupon
+    const validCoupon = await Coupon.findOne({ name: coupon }).exec();
+
+    if (!validCoupon) {
+      return res.status(403).json({
+        err: "Invalid coupon",
+      });
+    }
+    console.log("Valid", validCoupon);
+
+    // user data
+    const user = await User.findOne({ email: req.user.email }).exec();
+
+    // get user cart to apply discount
+    let { products, cartTotal } = await Cart.findOne({
+      orderBy: user._id,
+    })
+      .populate("products.product", "_id title price")
+      .exec();
+
+    console.log("PRODUCTS discount", validCoupon, cartTotal);
+
+    // total After discount
+    let totalAfterDiscount = (
+      cartTotal -
+      (cartTotal * validCoupon.discount) / 100
+    ).toFixed(2);
+
+    await Cart.findOneAndUpdate(
+      { orderBy: user._id },
+      {
+        totalAfterDiscount,
+      },
+      {
+        new: true,
+      }
+    ).exec((err, result) => {
+      console.log("DOUBT", result);
+      return res.status(201).json(totalAfterDiscount);
+    });
   } catch (err) {
     return res.status(500).json(err);
   }
