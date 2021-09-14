@@ -186,3 +186,16 @@ exports.createOrder = async (req, res) => {
   // Product.bulkWrite
   res.json({ ok: true });
 };
+
+exports.orders = async (req, res) => {
+  try {
+    let user = await User.findOne({ email: req.user.email }).exec();
+
+    let userOrders = await Order.find({ orderBy: user._id })
+      .populate("products.product")
+      .exec();
+    return res.status(200).json(userOrders);
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+};
