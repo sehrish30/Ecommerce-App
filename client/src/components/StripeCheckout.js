@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { Card } from "antd";
 import { DollarOutlined, CheckOutlined } from "@ant-design/icons";
 import Laptop from "../images/laptop.jpg";
+import { createOrder, emptyUserCart } from "../functions/user";
 
 const cardStyle = {
   style: {
@@ -76,6 +77,27 @@ const StripeCheckout = ({ history }) => {
       setError(null);
       setProcessing(false);
       setSucceeded(true);
+      createOrder(payload, user.token).then((res) => {
+        if (res.data.ok) {
+          // empty cart from localsttorage
+          if (typeof window) {
+            localStorage.removeItem("cart");
+          }
+          // empty cart from redux
+          dispatch({
+            type: "ADD_TO_CART",
+            payload: [],
+          });
+          // reset coupon to false
+          dispatch({
+            type: "COUPON_APPLIED",
+            payload: false,
+          });
+
+          // empty cart from database
+          emptyUserCart(user.token);
+        }
+      });
     }
   };
   const handleChange = async (e) => {

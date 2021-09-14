@@ -70,9 +70,16 @@ const ProductCard = ({ product }) => {
             <p>View product</p>
           </Link>,
           <Tooltip title={tooltip}>
-            <div onClick={handleAddToCart} style={{ flexDirection: "column" }}>
+            <div
+              onClick={handleAddToCart}
+              disabled={true}
+              style={{
+                flexDirection: "column",
+                pointerEvents: product.quantity < 1 ? "none" : "auto",
+              }}
+            >
               <ShoppingCartOutlined className="text-danger" />
-              <p>Add to Cart</p>
+              <p>{product.quantity < 1 ? "Out of stock" : "Add to Cart"}</p>
             </div>
           </Tooltip>,
         ]}
