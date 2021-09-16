@@ -199,3 +199,48 @@ exports.orders = async (req, res) => {
     return res.status(500).json(err);
   }
 };
+
+exports.addToWishlist = async (req, res) => {
+  try {
+    const { productId } = req.body;
+    const user = await User.findOneAndUpdate(
+      { email: req.user.email },
+      {
+        $addToSet: {
+          wishlist: productId,
+        },
+      }
+    ).exec();
+
+    return res.status(200).json({ ok: true });
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+};
+
+exports.wishlist = async (req, res) => {
+  try {
+    const list = await User.findOne({ email: req.user.email })
+      .select("wishlist")
+      .populate("wishlist")
+      .exec();
+    return res.status(200).json(list);
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+};
+
+exports.removeFromWishlist = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const user = await User.findOneAndUpdate(
+      { email: req.user.email },
+      {
+        $pull: { wishlist: productId },
+      }
+    ).exec();
+    return res.json({ ok: true });
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+};

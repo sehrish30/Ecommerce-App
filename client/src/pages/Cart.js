@@ -71,13 +71,22 @@ const Cart = () => {
           Total: <b>BD {getTotal()}</b>
           <hr />
           {user ? (
-            <button
-              onClick={saveOrderToDb}
-              disabled={!cart.length}
-              className="btn btn-sm btn-primary mt-2"
-            >
-              Proceed to Checkout
-            </button>
+            <div className="row mx-auto">
+              <button
+                onClick={saveOrderToDb}
+                disabled={!cart.length}
+                className="btn btn-sm btn-primary mt-2 mr-2"
+              >
+                Proceed to Checkout
+              </button>
+              <button
+                onClick={saveOrderToDb}
+                disabled={!cart.length}
+                className="btn btn-sm btn-warning mt-2"
+              >
+                Pay cash on delivery
+              </button>
+            </div>
           ) : (
             <button className="btn btn-sm btn-primary mt-2">
               <Link

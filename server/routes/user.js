@@ -9,6 +9,9 @@ const {
   applyCouponToUserCart,
   createOrder,
   orders,
+  addToWishlist,
+  removeFromWishlist,
+  wishlist,
 } = require("../controllers/user");
 const { authCheck } = require("../middlewares/auth");
 
@@ -18,6 +21,12 @@ router.get("/user/cart", authCheck, getUserCart);
 router.delete("/user/cart", authCheck, emptyCart);
 router.post("/user/address", authCheck, saveAddress);
 router.post("/user/order", authCheck, createOrder);
+
+// wishlist
+router.post("/user/wishlist", authCheck, addToWishlist);
+router.get("/user/wishlist", authCheck, wishlist);
+router.put("/user/wishlist/:productId", authCheck, removeFromWishlist);
+
 // coupon
 router.post("/user/cart/coupon", authCheck, applyCouponToUserCart);
 
