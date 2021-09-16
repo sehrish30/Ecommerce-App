@@ -12,6 +12,7 @@ const {
   addToWishlist,
   removeFromWishlist,
   wishlist,
+  createCashOrder,
 } = require("../controllers/user");
 const { authCheck } = require("../middlewares/auth");
 
@@ -20,7 +21,9 @@ router.get("/user/orders", authCheck, orders);
 router.get("/user/cart", authCheck, getUserCart);
 router.delete("/user/cart", authCheck, emptyCart);
 router.post("/user/address", authCheck, saveAddress);
+
 router.post("/user/order", authCheck, createOrder);
+router.post("/user/cash-order", authCheck, createCashOrder);
 
 // wishlist
 router.post("/user/wishlist", authCheck, addToWishlist);

@@ -22,8 +22,10 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.13.8",
     "morgan": "^1.10.0",
+    "mpath": "^0.8.4",
     "nodemon": "^2.0.12",
     "slugify": "^1.6.0",
-    "stripe": "^8.174.0"
+    "stripe": "^8.174.0",
+    "uniqueid": "^1.0.0"
   }
 }

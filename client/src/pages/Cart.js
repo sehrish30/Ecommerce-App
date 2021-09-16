@@ -23,6 +23,19 @@ const Cart = () => {
       .catch((err) => console.log(err));
   };
 
+  const saveCashOrderToDb = () => {
+    dispatch({
+      type: "COD",
+      payload: true,
+    });
+    userCart(cart, user.token)
+      .then((res) => {
+        console.log("CART POST REQ", res.data);
+        if (res.data.ok) history.push("/checkout");
+      })
+      .catch((err) => console.log(err));
+  };
+
   const showCartItems = () => (
     <table className="table table-bordered">
       <thead className="thead-dark">
@@ -80,7 +93,7 @@ const Cart = () => {
                 Proceed to Checkout
               </button>
               <button
-                onClick={saveOrderToDb}
+                onClick={saveCashOrderToDb}
                 disabled={!cart.length}
                 className="btn btn-sm btn-warning mt-2"
               >

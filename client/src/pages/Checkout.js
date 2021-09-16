@@ -4,6 +4,7 @@ import {
   emptyUserCart,
   saveUserAddress,
   applyCoupon,
+  createCashOrderForUser,
 } from "../functions/user";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
@@ -11,7 +12,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 const Checkout = ({ history }) => {
-  const { user } = useSelector((state) => ({ ...state }));
+  const { user, COD } = useSelector((state) => ({ ...state }));
 
   const [products, setProducts] = useState([]);
   const [totalAfterDiscount, setTotalAfterDiscount] = useState(0);
@@ -111,6 +112,13 @@ const Checkout = ({ history }) => {
         setDiscountError("Code invalid");
       });
   };
+  const createCashOrder = () => {
+    createCashOrderForUser(user.token, COD).then((res) => {
+      console.log("USER CASH", res.data);
+      // empty cart from redux, local Storage reset coupon
+      // redirect user to user history
+    });
+  };
 
   const showApplyCoupon = () => (
     <>
@@ -168,13 +176,23 @@ const Checkout = ({ history }) => {
 
         <div className="row">
           <div className="col-md-6">
-            <button
-              onClick={() => history.push("payment")}
-              disabled={!addressSaved || !products.length}
-              className="btn btn-primary"
-            >
-              Place Order
-            </button>
+            {COD ? (
+              <button
+                onClick={createCashOrder}
+                disabled={!addressSaved || !products.length}
+                className="btn btn-primary"
+              >
+                Place Order
+              </button>
+            ) : (
+              <button
+                onClick={() => history.push("payment")}
+                disabled={!addressSaved || !products.length}
+                className="btn btn-primary"
+              >
+                Place Order
+              </button>
+            )}
           </div>
           <div className="col-md-6">
             <button
