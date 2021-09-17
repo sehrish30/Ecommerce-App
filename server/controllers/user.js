@@ -247,9 +247,9 @@ exports.removeFromWishlist = async (req, res) => {
 };
 
 exports.createCashOrder = async (req, res) => {
-  const { COD } = req.body;
-  // if cod true create order with cash on deleivery
+  const { COD, couponApplied } = req.body;
 
+  // if cod true create order with cash on deleivery
   if (!COD) {
     return res.status(400).send("Create cash order failed");
   }
@@ -262,9 +262,16 @@ exports.createCashOrder = async (req, res) => {
     orderBy: user._id,
   }).exec();
 
+  let finalAmount = 0;
+  if (couponApplied && userCart.totalAfterDiscount) {
+    finalAmount = userCart.totalAfterDiscount * 100;
+  } else {
+    finalAmount = userCart.cartTotal * 100;
+  }
+
   let paymentIntent = {
     id: uniqueid(),
-    amount: userCart.cartTotal,
+    amount: finalAmount,
     currency: "usd",
     status: "Cash On Delivery",
     created: Date.now(),
@@ -275,6 +282,7 @@ exports.createCashOrder = async (req, res) => {
     products: userCart.products,
     paymentIntent,
     orderBy: user._id,
+    orderStatus: "Cash On Delivery",
   }).save();
 
   // decrement quantity, increment sold

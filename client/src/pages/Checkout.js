@@ -13,6 +13,7 @@ import "react-quill/dist/quill.snow.css";
 
 const Checkout = ({ history }) => {
   const { user, COD } = useSelector((state) => ({ ...state }));
+  const couponExists = useSelector((state) => state.coupon);
 
   const [products, setProducts] = useState([]);
   const [totalAfterDiscount, setTotalAfterDiscount] = useState(0);
@@ -57,12 +58,6 @@ const Checkout = ({ history }) => {
       setTotal(res.data.cartTotal);
     });
   }, []);
-
-  const handleAddress = (e) => {
-    // let add = e.target.value.replace("<p><br></p>", "");
-    // setAddress(add);
-    // console.log(add)
-  };
 
   const showAddress = () => (
     <>
@@ -113,10 +108,42 @@ const Checkout = ({ history }) => {
       });
   };
   const createCashOrder = () => {
-    createCashOrderForUser(user.token, COD).then((res) => {
+    createCashOrderForUser(user.token, COD, couponExists).then((res) => {
       console.log("USER CASH", res.data);
       // empty cart from redux, local Storage reset coupon
       // redirect user to user history
+      if (res.data.ok) {
+        // empty local storage
+        if (typeof window) {
+          localStorage.removeItem("cart");
+        }
+
+        // empty redux cart
+        dispatch({
+          type: "ADD_TO_CART",
+          payload: [],
+        });
+
+        // empty redux coupon
+        dispatch({
+          type: "COUPON_APPLIED",
+          payload: false,
+        });
+
+        // empty redux COD
+        dispatch({
+          type: "COD",
+          payload: false,
+        });
+
+        // empty cart from database
+        emptyUserCart(user.token);
+
+        // redirect
+        setTimeout(() => {
+          history.push("/user/history");
+        }, 1000);
+      }
     });
   };
 

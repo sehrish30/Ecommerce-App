@@ -53,6 +53,8 @@ const Orders = ({ orders, handleStatusChange }) => {
                   ? "#F0E5CF"
                   : order.orderStatus === "processing"
                   ? "#FDF5CA"
+                  : order.orderStatus === "Cash On Delivery"
+                  ? "#F7DAD9"
                   : "#F3F1F5",
             }}
           >
@@ -73,6 +75,7 @@ const Orders = ({ orders, handleStatusChange }) => {
                   <option value="Dispatched">Dispatched</option>
                   <option value="Cancelled">Cancelled</option>
                   <option value="Completed">Completed</option>
+                  <option value="Cash On Delivery">Cash On Delivery</option>
                 </select>
               </div>
             </div>
