@@ -24,9 +24,7 @@ const CategoryCreate = lazy(() =>
 );
 const UserRoute = lazy(() => import("./components/routes/UserRoute"));
 const AdminRoute = lazy(() => import("./components/routes/AdminRoute"));
-const CategoryUpdate = lazy(() =>
-  import("./pages/admin/category/CategoryUpdate")
-);
+
 const SubCreate = lazy(() => import("./pages/admin/sub/SubCreate"));
 const SubUpdate = lazy(() => import("./pages/admin/sub/SubUpdate"));
 const ProductCreate = lazy(() => import("./pages/admin/product/ProductCreate"));
